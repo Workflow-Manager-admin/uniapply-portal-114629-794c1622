@@ -41,7 +41,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Default bcrypt cost is 12 (good balance). Ensure not set higher by accident which causes slowness.
+pwd_context = CryptContext(schemes=["bcrypt"], bcrypt__rounds=12, deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
@@ -95,8 +96,14 @@ class ApplicationStatusOut(BaseModel):
 # =================
 
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE_URL)
+    # Set check_same_thread=False for multithreaded FastAPI (to avoid SQLite access serialization).
+    conn = sqlite3.connect(DATABASE_URL, check_same_thread=False)
     conn.row_factory = sqlite3.Row
+    # Ensure connection is using WAL mode for better concurrency in production.
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass  # Compatibility fallback only
     return conn
 
 
@@ -261,6 +268,24 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Authenticate and return JWT access token.
     """
+    # Start profiling login performance for diagnostics.
+    import time
+    start_time = time.time()
+
+    # Potential bottleneck 1: Password hash verification with bcrypt
+    # -- If bcrypt is used with very high rounds or system is underpowered, this can cause delay.
+    # -- Solution: Reduce bcrypt rounds to a reasonable secure-minimum if set higher by mistake.
+    # Let's force bcrypt to use 12 rounds (default is usually 12; more causes slowdowns).
+    if hasattr(pwd_context, "schemes"):
+        # If there are explicit rounds settings, adjust accordingly.
+        # Set bcrypt rounds lower ONLY if currently misconfigured.
+        try:
+            scheme = pwd_context.handler("bcrypt")
+            if hasattr(scheme, "rounds") and getattr(scheme, "rounds") > 12:
+                pwd_context.update(bcrypt__rounds=12)
+        except Exception:
+            pass
+
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect email or password")
@@ -268,6 +293,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         data={"sub": user["email"]},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
+
+    elapsed = time.time() - start_time
+    if elapsed > 2:
+        # Log slow login response for further backend diagnostics (this would help in production/system logs)
+        print(f"[Warning] Slow login response: {elapsed:.2f}s for user: {form_data.username}")
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -287,12 +318,18 @@ def submit_application(application: ApplicationSubmit, user=Depends(get_user_fro
     cur = conn.cursor()
     now = datetime.utcnow().isoformat()
     cur.execute(
-        "INSERT INTO applications (user_id, program, full_name, dob, status, submit_time, "
-        "additional_info) VALUES (?, ?, ?, ?, 'Submitted', ?, ?)",
         (
-            user['id'], application.program, application.full_name,
-            application.dob, now, application.additional_info
-        )
+            "INSERT INTO applications (user_id, program, full_name, dob, status, submit_time, "
+            "additional_info) VALUES (?, ?, ?, ?, 'Submitted', ?, ?)"
+        ),
+        (
+            user['id'],
+            application.program,
+            application.full_name,
+            application.dob,
+            now,
+            application.additional_info,
+        ),
     )
     app_id = cur.lastrowid
     conn.commit()
@@ -326,24 +363,27 @@ def list_my_applications(user=Depends(get_user_from_token)):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT * FROM applications WHERE user_id = ? ORDER BY submit_time DESC",
+        "SELECT * FROM applications WHERE user_id = ? "
+        "ORDER BY submit_time DESC",
         (user['id'],)
     )
     apps = cur.fetchall()
     conn.close()
-    return [
-        ApplicationOut(
-            id=row['id'],
-            user_id=row['user_id'],
-            program=row['program'],
-            full_name=row['full_name'],
-            dob=row['dob'],
-            status=row['status'],
-            submit_time=row['submit_time'],
-            additional_info=row['additional_info']
+    output_list = []
+    for row in apps:
+        output_list.append(
+            ApplicationOut(
+                id=row['id'],
+                user_id=row['user_id'],
+                program=row['program'],
+                full_name=row['full_name'],
+                dob=row['dob'],
+                status=row['status'],
+                submit_time=row['submit_time'],
+                additional_info=row['additional_info'],
+            )
         )
-        for row in apps
-    ]
+    return output_list
 
 
 # PUBLIC_INTERFACE

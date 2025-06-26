@@ -1,0 +1,23 @@
+INFO:     Started server process [4008]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3001 (Press CTRL+C to quit)
+INFO:     100.64.4.167:44226 - "HEAD /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44236 - "HEAD /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44250 - "HEAD /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44258 - "HEAD /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44260 - "HEAD /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44268 - "HEAD /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44274 - "GET /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44286 - "GET /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44298 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44308 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     100.64.4.167:39394 - "GET /health HTTP/1.1" 200 OK
+(trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/kavia/workspace/code-generation/uniapply-portal-114629-794c1622/student_registration_backend_workspace/student_registration_backend/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     100.64.4.167:55004 - "POST /signup HTTP/1.1" 200 OK
+INFO:     100.64.4.167:43208 - "POST /token HTTP/1.1" 200 OK
