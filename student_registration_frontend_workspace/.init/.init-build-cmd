@@ -1,0 +1,4 @@
+{
+    "command": "npm install && npx tsc --noEmit && npm test -- --ci",
+    "working_directory": "/home/kavia/workspace/code-generation/uniapply-portal-114629-794c1622/student_registration_frontend_workspace/student_registration_frontend"
+}
