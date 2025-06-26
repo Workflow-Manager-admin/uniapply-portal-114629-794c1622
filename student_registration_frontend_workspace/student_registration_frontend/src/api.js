@@ -1,7 +1,7 @@
 //
 // API utility for communicating with the student registration backend.
 //
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:3001";
+const API_BASE = process.env.REACT_APP_API_BASE || "https://vscode-internal-90-beta.beta01.cloud.kavia.ai:3001";
 
 // Helper to handle JSON and errors
 async function apiFetch(url, { method = "GET", body, token, contentType, ...rest } = {}) {
