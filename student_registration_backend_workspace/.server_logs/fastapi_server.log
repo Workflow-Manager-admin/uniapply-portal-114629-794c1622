@@ -15,3 +15,13 @@ Traceback (most recent call last):
               ^^^^^^^^^^^^^^^^^
 AttributeError: module 'bcrypt' has no attribute '__about__'
 INFO:     100.64.4.167:33784 - "POST /token HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44700 - "GET /docs HTTP/1.1" 200 OK
+INFO:     100.64.4.167:44706 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     100.64.4.167:34292 - "HEAD /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:34302 - "GET /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:34310 - "HEAD /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:34314 - "GET /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:59852 - "HEAD /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:59866 - "GET /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:59876 - "HEAD /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:59890 - "GET /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
