@@ -319,8 +319,8 @@ def submit_application(application: ApplicationSubmit, user=Depends(get_user_fro
     now = datetime.utcnow().isoformat()
     cur.execute(
         (
-            "INSERT INTO applications (user_id, program, full_name, dob, status, submit_time, "
-            "additional_info) VALUES (?, ?, ?, ?, 'Submitted', ?, ?)"
+            "INSERT INTO applications (user_id, program, full_name, dob, status, "
+            "submit_time, additional_info) VALUES (?, ?, ?, ?, 'Submitted', ?, ?)"
         ),
         (
             user['id'],
@@ -363,8 +363,10 @@ def list_my_applications(user=Depends(get_user_from_token)):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT * FROM applications WHERE user_id = ? "
-        "ORDER BY submit_time DESC",
+        (
+            "SELECT * FROM applications WHERE user_id = ? "
+            "ORDER BY submit_time DESC"
+        ),
         (user['id'],)
     )
     apps = cur.fetchall()
