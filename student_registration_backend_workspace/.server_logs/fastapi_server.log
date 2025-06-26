@@ -25,3 +25,15 @@ INFO:     100.64.4.167:59852 - "HEAD /kavia-docs/api_documentation.md HTTP/1.1" 
 INFO:     100.64.4.167:59866 - "GET /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
 INFO:     100.64.4.167:59876 - "HEAD /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
 INFO:     100.64.4.167:59890 - "GET /kavia-docs/api_documentation.md HTTP/1.1" 404 Not Found
+INFO:     100.64.4.167:37532 - "POST /token HTTP/1.1" 200 OK
+INFO:     100.64.4.167:37540 - "OPTIONS /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:37544 - "OPTIONS /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:37556 - "GET /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:37560 - "GET /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35138 - "OPTIONS /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35152 - "POST /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35162 - "GET /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35176 - "GET /applications/ HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35190 - "OPTIONS /applications/1/status HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35200 - "GET /applications/1/status HTTP/1.1" 200 OK
+INFO:     100.64.4.167:35204 - "GET /applications/1/status HTTP/1.1" 200 OK
